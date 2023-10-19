@@ -13,17 +13,40 @@ class Character:
     # Initializing function
     # ADD background, parameter
     # ADD self.character_background = background
-    def __init__(self, character_class,  val):
+    def __init__(self, character_class, background, val):
         self.character_class = character_class
         self.stats = self.generate_character_stats(val)
         self.modifiers = self.calculate_modifiers()
+        self.character_background = background
         self.skills = self.generate_background_skills()
     
     def generate_background_skills(self):
         skills = set()
-        for skill in background_skills.get(self.character_class):
+        background_skills_list = background_skills.get(self.character_background, [])
+        for skill in background_skills_list:
             skills.add(skill)
         return skills
+    
+    def generate_class_skills(self):
+        # Set of class skills available for the clas
+        class_skill_set = set(class_skills.get(self.character_class))
+        # Set of skills available for the background
+        background_skill_set = set(background_skills.get(self.character_background))
+        # Finds number of skills to add
+        num_skills_to_add = class_skill_number.get(self.character_class)
+        #Creates set of available skills from skills not already taken in the background
+        available_skills = list((class_skill_set).difference(background_skill_set))
+        print(available_skills)
+        #Randomized the order of the available skills
+        random.shuffle(available_skills)
+        # Adds proper number of skills
+        for _ in range(num_skills_to_add):
+            if available_skills:
+                skill = available_skills.pop()
+                self.skills.add(skill)
+            else:
+                break  
+        return self.skills
         
     def generate_character_stats(self, val):
         priority_list = self.priority_stats.get(self.character_class)
@@ -82,23 +105,6 @@ class Character:
         for stat, value in self.stats.items():
             mod = (value - 10) // 2
             print(stat + ": " + str(mod))
-            
-    def generate_class_skills(self):
-        # et of class skills available for the clas
-        class_skill_set = set(class_skills.get(self.character_class))
-        # Set of skills available for the background
-        background_skill_set = set(background_skills.get(self.background))
-        # Finds number of skills to add
-        num_skills_to_add = class_skill_number.get(self.character_class)
-        #Creates set of available skills from skills not already taken in the background
-        available_skills = set((class_skill_set).difference(background_skill_set))
-        #Randomized the order of the available skills
-        random.shuffle(available_skills)
-        # Adds proper number of skills
-        for _ in range(num_skills_to_add):
-            skill = available_skills.pop()
-            self.skills.add(skill)  
-        return self.skills
         
     def print_skills(self):
         print("Your character has proficiency in")
@@ -273,11 +279,10 @@ val = int(input("Welcome to Audrey's D&D Character Generator! Would you like to 
 char_race = generate_character_race()
 char_background = generate_character_background()
 char_class = generate_character_class()
-print("Cleric")
-print(val)
-player_character = Character("Cleric", val)
+player_character = Character(char_class, char_background, val)
 player_character.calculate_racial_bonus(char_race, racial_bonus)
 player_character.calculate_modifiers()
+player_character.generate_class_skills()
 print(f"Your character is a {char_race} {char_class} with the {char_background} background with the following stats:")
 player_character.print_stats()
 print("Their ability score modifiers are:")
