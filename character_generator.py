@@ -35,10 +35,7 @@ class Character:
         # Finds number of skills to add
         num_skills_to_add = class_skill_number.get(self.character_class)
         #Creates set of available skills from skills not already taken in the background
-        available_skills = list((class_skill_set).difference(background_skill_set))
-        print(available_skills)
-        #Randomized the order of the available skills
-        random.shuffle(available_skills)
+        available_skills = set((class_skill_set).difference(background_skill_set))
         # Adds proper number of skills
         for _ in range(num_skills_to_add):
             if available_skills:
@@ -163,8 +160,9 @@ racial_bonus = {
 }
 
 # Skill proficiencies for class
+#Define contastants for 
 class_skills = {
-    "Artificer" : ["Persuasion", "Obama"],
+    "Artificer" : ["Arcana", "History", "Investigation", "Medicine", "Nature", "Perception", "Sleight of Hand"],
     "Barbarian" : ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"],
     "Bard" : ["Athletics", "Acrobatics", "Sleight of Hand", "Stealth", "Arcana", "Historty", "Investigation", "Nature", "Religion", "Animal Handling", "Insight", "Medicine", "Perception", "Survival", "Deception", "Intimidation", "Performance", "Persuasion"],
     "Cleric" : ["History", "Insight", "Medicine", "Persuasion", "Religion"],
